@@ -4,9 +4,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 """
-    Draw spectogram of a randomly selected file.
-    Script with testing purpose.
+    Draws a spectrogram of a randomly selected audio file.
+    This script is intended for testing purposes.
 """
+
 audio, sr = librosa.load("data_thchs30/train/A11_0.wav", sr=None) # original probing
 
 D = librosa.stft(audio)

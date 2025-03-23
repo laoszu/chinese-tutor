@@ -1,3 +1,4 @@
+import argparse
 import librosa
 import pandas as pd
 import numpy as np
@@ -35,8 +36,8 @@ def read_transcript(path):
             raise FileNotFoundError(f"File {path} doesn't exist.")
         
         with open(path, "r", encoding="utf-8") as f:
-            line = f.readline().strip()
-            print(line)
+            while line := f.readline():
+                print(line.rstrip())
 
     except Exception as e:
         print(f"Couldn't process file {path}: {str(e)}")
@@ -51,11 +52,15 @@ def play_audio(audio_path):
     except Exception as e:
         print(f"Error: {str(e)}")
 
-if sys.platform == "win32":
-    sys.stdout.reconfigure(encoding='utf-8')
+if __name__ == "__main__":
+    if sys.platform == "win32":
+        sys.stdout.reconfigure(encoding='utf-8')
 
-example_audio = "data_thchs30/train/A11_0.wav"
-example_transcript = example_audio + ".trn"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("file", type=str, help="Path to audio file")
+    args = parser.parse_args()
 
-play_audio(example_audio)
-read_transcript(get_transcript_path(example_transcript))
+    transcript = args.file + ".trn"
+
+    play_audio(args.file)
+    read_transcript(get_transcript_path(transcript))

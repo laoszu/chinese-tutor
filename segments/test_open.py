@@ -15,6 +15,8 @@ import sounddevice as sd
 
 def get_transcript_path(raw_path):
     try:
+        if raw_path[-3:] != "trn":
+            raw_path += ".trn"
         if not os.path.exists(raw_path):
             raise FileNotFoundError(f"File {raw_path} doesn't exist.")
 
@@ -35,9 +37,11 @@ def read_transcript(path):
         if not os.path.exists(path):
             raise FileNotFoundError(f"File {path} doesn't exist.")
         
+        trn = []
         with open(path, "r", encoding="utf-8") as f:
             while line := f.readline():
-                print(line.rstrip())
+                trn.append(line.rstrip())
+        return trn
 
     except Exception as e:
         print(f"Couldn't process file {path}: {str(e)}")

@@ -34,21 +34,5 @@ data_thchs30/
 To find out more about this dataset, [check out my analysis](data_thchs30.ipynb)!
 
 # Credits (thchs30)
-Authors:
-- Dong Wang
-- Xuewei Zhang
-- Zhiyong Zhang
-
-Contactor:
-- Dong Wang, Xuewei Zhang, Zhiyong Zhang
-- wangdong99@mails.tsinghua.edu.cn
-- zxw@cslt.riit.tsinghua.edu.cn
-- zhangzy@cslt.riit.tsinghua.edu.cn
-
-CSLT, Tsinghua University
-
-ROOM1-303, BLDG FIT <br/>
-Tsinghua University
-
-http://cslt.org <br/>
-http://cslt.riit.tsinghua.edu.cn
+Authors: Dong Wang, Xuewei Zhang, Zhiyong Zhang <br/>
+CSLT, Tsinghua University, http://cslt.org, http://cslt.riit.tsinghua.edu.cn

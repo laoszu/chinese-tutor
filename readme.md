@@ -1,5 +1,5 @@
 # Chinese Tutor
-This is a project for classifying Mandarin Chinese（官话）tones from audio recordings, designed to assist language learners in mastering tonal pronunciation.
+This is a project for classifying Mandarin Chinese（官话）tones from audio recordings, later might be integrated into an app that helps chinese language learners master tonal pronunciation.
 
 ## Installation
 
@@ -7,32 +7,6 @@ This is a project for classifying Mandarin Chinese（官话）tones from audio r
 pip install librosa tensorflow scikit-learn matplotlib seaborn sounddevice pydub
 ```
 
-# Dataset Preparation
-Download [THCHS-30 from OpenSLR](https://www.openslr.org/18/).
-
-Extract files to `data_thchs30/` directory:
-
-```
-data_thchs30/
-    ├── data/
-    │   ├── *.wav
-    │   └── *.wav.trn
-    ├── train/
-    │   └── ...
-    ├── dev/
-    │   └── ...
-    ├── test/
-    │   └── ...
-    ├── lm_word/
-    │   ├── word.3gram.lm
-    │   └── lexicon.txt
-    └── lm_phone/
-        ├── phone.3gram.lm
-        └── lexicon.txt
-```
-
-To find out more about this dataset, [check out my analysis](data_thchs30.ipynb)!
-
-# Credits (thchs30)
-Authors: Dong Wang, Xuewei Zhang, Zhiyong Zhang <br/>
-CSLT, Tsinghua University, http://cslt.org, http://cslt.riit.tsinghua.edu.cn
+# Used Data
+1. THCHS-30 : A Free Chinese Speech Corpus, Dong Wang, Xuewei Zhang, Zhiyong Zhang @CSLT, Tsinghua Univ (2015) http://arxiv.org/abs/1512.01882, https://openslr.org/18/
+2. Catherine Ryu, Mandarin Tone Perception & Production Team, and Michigan State University Libraries. Tone Perfect: Multimodal Database for Mandarin Chinese. Accessed 26 March 2025. https://tone.lib.msu.edu/

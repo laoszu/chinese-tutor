@@ -79,12 +79,15 @@ def plot_audio_analysis(audio_path):
                             sr=SR, hop_length=HOP_LENGTH,
                             cmap='magma', ax=ax2)
     
-    ax2.set_title('amplitude-scaled spectogram', fontsize=16, pad=15)
+    ax2.set_title('Spectogram', fontsize=16, pad=15)
     ax2.set_ylim(70, 450)
     
-    # dB scaled spectogram (more similar to human perception of hearing)
-    S_db = librosa.amplitude_to_db(S, ref=np.max)
-    librosa.display.specshow(S_db, x_axis='time', y_axis='log',
+    # mel spectogram (more similar to human perception of hearing)
+    magnitude, phase = librosa.magphase(S)
+    mel_scale_sgram = librosa.feature.melspectrogram(S=magnitude, sr=SR)
+    S_db = librosa.amplitude_to_db(mel_scale_sgram, ref=np.min)
+
+    librosa.display.specshow(S_db, x_axis='time', y_axis='mel',
                             sr=SR, hop_length=HOP_LENGTH,
                             cmap='magma', ax=ax3)
     
@@ -93,18 +96,7 @@ def plot_audio_analysis(audio_path):
                     color='cyan', alpha=0.2, 
                     label='Speech regions')
     
-    ## highlight energy range --- possibly a speech regions
-    librosa.display.specshow((S_db >= -25) & (S_db <= 0), 
-                            x_axis='time', 
-                            y_axis='log',
-                            sr=SR,
-                            hop_length=HOP_LENGTH,
-                            cmap=ListedColormap([(0,0,0,0), (0,1,0,0.5)]),
-                            ax=ax3)
-    
-    print(max(map(max, S_db)))
-
-    ax3.set_title('dB-scaled spectogram with marked speech', fontsize=16, pad=15)
+    ax3.set_title('Mel spectogram', fontsize=16, pad=15)
     ax3.set_ylim(70, 450)
     legend_labels = [
         Patch(color='cyan', alpha=0.2, label='Speech regions'),

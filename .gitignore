@@ -1,5 +1,8 @@
 /data_thchs30
 /tone-perfect
 
+__pycache__/
+*/__pycache__/
+
 temp.py
 best_model.keras

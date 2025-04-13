@@ -1,5 +1,4 @@
 import torch.nn as nn
-import torch.nn.functional as F
 
 class ToneCNN(nn.Module):
     def __init__(self, n_classes=4):
@@ -21,3 +20,10 @@ class ToneCNN(nn.Module):
             nn.Dropout(0.5),
             nn.Linear(128, n_classes)
         )
+    
+    def forward(self, x):
+        x = self.features(x)
+        x = self.adaptive_pool(x)
+        x = x.flatten(1)
+        x = self.classifier(x)
+        return x

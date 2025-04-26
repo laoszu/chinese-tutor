@@ -15,21 +15,24 @@ class ToneDataset(Dataset):
             hop_length: samples between each fft window - step size
             fixed_time: time frames (columns) in the spect
         '''
-
+        
         self.dir = Path(dir)
         self.files = list(self.dir.glob("*.mp3"))
+        if not self.files:
+            raise FileNotFoundError(f"No files found in {dir}!")
+        self.filenames = [f.name for f in self.files]
+
+        # extraction methods
         self.target_length = target_length
         self.n_mels = n_mels
         self.n_fft = n_fft
         self.hop_length = hop_length
         self.fixed_time = fixed_time
-        self.filenames = [f.name for f in self.files]
         
-        if not self.files:
-            raise FileNotFoundError(f"No files found in {dir}")
-        
+        # get the tone labels from filenames
+        # structure: pinyin + tone + ... + .mp3
         self.labels = []
-        pattern = re.compile(r"([a-zA-Z]+)(\d)")    # get first digit (tone class) and the first word (label)
+        pattern = re.compile(r"([a-zA-Z]+)(\d)")
         
         for file in self.files:
             match = pattern.search(file.stem)
@@ -37,32 +40,31 @@ class ToneDataset(Dataset):
                 raise ValueError(f"Invalid filename: {file.name}")
             tone_number = int(match.group(2))
             if tone_number < 1 or tone_number > 4:
-                raise ValueError(f"Invalid tone number in filename: {file.name} (tone: {tone_number})")
-            self.labels.append(tone_number - 1)
+                raise ValueError(f"Invalid tone number in filename: {file.name}")
+            self.labels.append(tone_number - 1) # 0, 1, 2, 4
     
     def __getitem__(self, idx):
         file_path = self.files[idx]
         y, sr = lb.load(file_path, sr=22050, mono=True)
         
-        # trim/pad the audio to the target length
         if len(y) > self.target_length:
             y = y[:self.target_length]
         else:
             y = np.pad(y, (0, max(0, self.target_length - len(y))), mode="constant")
         
-        # to the mel spectogram (and change the scale to db)
-        mel = lb.feature.melspectrogram(y=y, sr=sr, n_fft=self.n_fft, 
-                                        hop_length=self.hop_length, n_mels=self.n_mels)
+        # mel-spectrogram extraction
+        mel = lb.feature.melspectrogram(y=y, sr=sr, n_fft=self.n_fft, hop_length=self.hop_length, n_mels=self.n_mels)
         mel_db = lb.power_to_db(mel, ref=np.max)
         
-        # spect time dimension to fixed_time columns
+        # fixed number of time frames (columns)
         if mel_db.shape[1] < self.fixed_time:
-            mel_db = np.pad(mel_db, ((0, 0), (0, self.fixed_time - mel_db.shape[1])), mode="constant")
+            mel_db = np.pad(mel_db, ((0, 0), (0, self.fixed_time - mel_db.shape[1])), mode="constant") # add zeros to the end
         elif mel_db.shape[1] > self.fixed_time:
-            mel_db = mel_db[:, :self.fixed_time]
+            mel_db = mel_db[:, :self.fixed_time] # truncate the end
         
-        # normalize the spectrogram (0, 1)
+        # normalization
         mel_db = (mel_db - mel_db.min()) / (mel_db.max() - mel_db.min() + 1e-9)
+        
         return torch.from_numpy(mel_db).float().unsqueeze(0), self.labels[idx]
     
     def __len__(self):
